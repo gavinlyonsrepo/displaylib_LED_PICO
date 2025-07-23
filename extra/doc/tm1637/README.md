@@ -22,15 +22,20 @@ Connections to RPI:
 
 NOTE : If VCC is set to 5V, level shift GPIO to 3.3V or damage could result.
 
-This library is tested on one variant of the TM1637 (model 4)
-which has 4 digits with centred semi-colon , the library should work with other models
-(six digit, decimal points, etc) but is untested.
+This library is tested on two variant of the TM1637. 
+
+1. TM1637 (model 4) which has 4 digits with centred semi-colon.
+2. TM1637 (model 6) which has 4 digits and decimal points for each digit.
+
 
 
 Model 4: 
 
 [![ model4 ](https://github.com/gavinlyonsrepo/pic_16F1619_projects/blob/master/images/tm1637.jpg)](https://github.com/gavinlyonsrepo/pic_16F1619_projects/blob/master/images/tm1637.jpg)
 
+Model 6:
+
+[![ model6 ](https://github.com/gavinlyonsrepo/pic_16F1619_projects/blob/master/images/tm1637a.jpg)](https://github.com/gavinlyonsrepo/pic_16F1619_projects/blob/master/images/tm1637a.jpg)
 
 ## Software
 

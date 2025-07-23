@@ -30,7 +30,7 @@ public:
 		DecPointOn   = 1  /**< Decimal point segment on */
 	};
 	
-	static constexpr std::string displaylib_LED_VersionNum = "2.1.0"; /**< library version number */
+	static constexpr std::string displaylib_LED_VersionNum = "2.2.0"; /**< library version number */
 	bool displaylib_LED_debug = false; /**< debug flag, true = debug mode on, extra infomation written to console */
 
 protected:

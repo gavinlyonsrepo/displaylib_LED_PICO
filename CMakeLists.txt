@@ -21,7 +21,8 @@ add_executable(${PROJECT_NAME}
   #examples/tm1638/MODEL2/main.cpp
   #examples/tm1638/MODEL3/main.cpp
 
-  #examples/tm1637/main.cpp
+  #examples/tm1637/semi_colon/main.cpp
+  #examples/tm1637/decimal_point/main.cpp
 
   #examples/max7219/tests/main.cpp
   #examples/max7219/cascade_demo/main.cpp

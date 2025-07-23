@@ -13,14 +13,16 @@
 	@param chipSelect CS pin
 	@param data DIO pin
 	@param CommDelay uS Software SPI communications delay
+	@param totalDisplays Total number of displays in cascade
 	@note overloaded this one is for Software SPI
 */
-MAX7219plus_model5::MAX7219plus_model5(uint8_t clock, uint8_t chipSelect , uint8_t data, uint16_t CommDelay)
+MAX7219plus_model5::MAX7219plus_model5(uint8_t clock, uint8_t chipSelect , uint8_t data, uint16_t CommDelay, uint8_t totalDisplays)
 {
 	_Display_SCLK = clock;
 	_Display_CS  = chipSelect;
 	_Display_SDATA = data;
 	_CommDelay = CommDelay;
+	_NoDisplays = totalDisplays;
 	_HardwareSPI = false;
 }
 
@@ -31,15 +33,17 @@ MAX7219plus_model5::MAX7219plus_model5(uint8_t clock, uint8_t chipSelect , uint8
 	@param data DIO pin
 	@param baudrate baudrate in Khz , 1000 = 1 Mhz
 	@param spiInterface Spi interface, spi0 spi1 etc
+	@param totalDisplays Total number of displays in cascade
 	@note overloaded this one is for Hardware SPI 
 */
-MAX7219plus_model5::MAX7219plus_model5(uint8_t clock, uint8_t chipSelect , uint8_t data, uint32_t baudrate, spi_inst_t* spiInterface )
+MAX7219plus_model5::MAX7219plus_model5(uint8_t clock, uint8_t chipSelect , uint8_t data, uint32_t baudrate, spi_inst_t* spiInterface , uint8_t totalDisplays)
 {
 	_Display_SCLK = clock;
 	_Display_CS  = chipSelect;
 	_Display_SDATA = data;
 	_pspiInterface = spiInterface;
 	_speedSPIKHz = baudrate;
+	_NoDisplays = totalDisplays;
 	_HardwareSPI = true;
 }
 
@@ -510,33 +514,34 @@ uint8_t MAX7219plus_model5::ASCIIFetch(uint8_t character, DecimalPoint_e decimal
 */
 void MAX7219plus_model5::WriteDisplay( uint8_t RegisterCode, uint8_t data)
 {
-
 	if (_HardwareSPI == false)
 	{
 		gpio_put(_Display_CS, false);
-		HighFreqshiftOut(RegisterCode);
-		HighFreqshiftOut(data);
-		if (_CurrentDisplayNumber  > 1)
+		// Loop over all displays, from last to first in chain
+		for (int8_t i = _NoDisplays; i >= 1; i--)
 		{
-			for (uint8_t i= 1 ; i <_CurrentDisplayNumber; i++)
+			if (i == _CurrentDisplayNumber)
 			{
+				HighFreqshiftOut(RegisterCode);
+				HighFreqshiftOut(data);
+			}else{
 				HighFreqshiftOut(MAX7219_REG_NOP);
 				HighFreqshiftOut(0x00);
 			}
 		}
 		gpio_put(_Display_CS, true);
-	}else
-	{
-		uint8_t TransmitBuffer[_CurrentDisplayNumber*2];
-		TransmitBuffer[0] = RegisterCode;
-		TransmitBuffer[1] = data;
-		if (_CurrentDisplayNumber  > 1)
-		{
-			for (uint8_t i= 2 ; i < (_CurrentDisplayNumber*2) ; i++)
-			{
-				TransmitBuffer[i] = 0x00;
-			}
+	}else{
+		uint8_t TransmitBuffer[_NoDisplays * 2];
+		// Fill all with NOPs
+		for (uint8_t i = 0; i < _NoDisplays; i++) {
+			TransmitBuffer[i * 2]     = MAX7219_REG_NOP;
+			TransmitBuffer[i * 2 + 1] = 0x00;
 		}
+		// Place real command for the target display
+		uint8_t displayIndex = _NoDisplays - _CurrentDisplayNumber;
+		TransmitBuffer[displayIndex * 2]     = RegisterCode;
+		TransmitBuffer[displayIndex * 2 + 1] = data;
+
 		gpio_put(_Display_CS, false);
 		spi_write_blocking(_pspiInterface, TransmitBuffer, sizeof(TransmitBuffer));
 		gpio_put(_Display_CS, true);

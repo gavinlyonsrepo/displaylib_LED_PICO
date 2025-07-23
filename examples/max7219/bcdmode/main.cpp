@@ -22,6 +22,7 @@
 // *** USER OPTION SPI SELECTION ***
 #define hardwareSPI //hardware SPI , comment for software SPI
 // ***
+uint8_t totalDisplays = 1; // Total number of displays in cascade
 
 #ifdef hardwareSPI // Hardware SPI setup
 	int8_t SDIN = 19; 
@@ -29,14 +30,14 @@
 	int8_t CS   = 2 ;  
 	uint32_t SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
 	// Constructor object 
-	MAX7219plus_model5 myMAX(SCLK, CS, SDIN , SCLK_FREQ, spi0);
+	MAX7219plus_model5 myMAX(SCLK, CS, SDIN , SCLK_FREQ, spi0, totalDisplays);
 #else // Software SPI setup
 	int8_t SDIN = 4; 
 	int8_t SCLK = 3; 
 	int8_t CS   = 2 ;  
 	uint16_t CommDelay = 0; //uS software SPI delay.
 	// Constructor object 
-	MAX7219plus_model5 myMAX(SCLK, CS,SDIN, CommDelay);
+	MAX7219plus_model5 myMAX(SCLK, CS,SDIN, CommDelay, totalDisplays);
 #endif
 
 // Function Prototypes

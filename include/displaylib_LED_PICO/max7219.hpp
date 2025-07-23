@@ -22,9 +22,8 @@
 class MAX7219plus_model5 : public SevenSegmentFont , public CommonData
 {
 public:
-	MAX7219plus_model5(uint8_t clock, uint8_t chipSelect, uint8_t data, uint16_t CommDelay);
-	MAX7219plus_model5(uint8_t clock, uint8_t chipSelect, uint8_t data, uint32_t baudrate, spi_inst_t* spiInterface);
-
+	MAX7219plus_model5(uint8_t clock, uint8_t chipSelect, uint8_t data, uint16_t CommDelay, uint8_t totalDisplays);
+	MAX7219plus_model5(uint8_t clock, uint8_t chipSelect, uint8_t data, uint32_t baudrate, spi_inst_t* spiInterface, uint8_t totalDisplays);
 	/*! The decode-mode register sets BCD code B or no-decode operation for each digit */
 	enum DecodeMode_e : uint8_t
 	{
@@ -128,6 +127,7 @@ private:
 	DecodeMode_e CurrentDecodeMode; /**< Enum to store current decode mode  */
 
 	uint8_t _CurrentDisplayNumber = 1; /**< Which display the user wishes to write to in a cascade of connected displays*/
+	uint8_t _NoDisplays = 1; /**< Number of displays in cascade, default is 1 */
 
 	void HighFreqshiftOut(uint8_t value);
 	void WriteDisplay(uint8_t RegisterCode, uint8_t data);

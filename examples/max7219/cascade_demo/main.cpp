@@ -26,20 +26,22 @@
 #define hardwareSPI //hardware SPI , comment for software SPI
 // ***
 
+uint8_t totalDisplays = 2; // Total number of displays in cascade
+
 #ifdef hardwareSPI // Hardware SPI setup
 	int8_t SDIN = 19; 
 	int8_t SCLK = 18; 
 	int8_t CS   = 2 ;  
 	uint32_t SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
 	// Constructor object 
-	MAX7219plus_model5 myMAX(SCLK, CS, SDIN , SCLK_FREQ, spi0);
+	MAX7219plus_model5 myMAX(SCLK, CS, SDIN , SCLK_FREQ, spi0, totalDisplays);
 #else // Software SPI setup
 	int8_t SDIN = 4; 
 	int8_t SCLK = 3; 
 	int8_t CS   = 2 ;  
 	uint16_t CommDelay = 0; //uS software SPI delay.
 	// Constructor object 
-	MAX7219plus_model5 myMAX(SCLK, CS,SDIN, CommDelay);
+	MAX7219plus_model5 myMAX(SCLK, CS,SDIN, CommDelay, totalDisplays);
 #endif
 
 // Main loop
@@ -58,7 +60,6 @@ int main()
 	// -Init Display one 
 	myMAX.SetCurrentDisplayNumber(1);
 	myMAX.InitDisplay(myMAX.ScanEightDigit, myMAX.DecodeModeNone);
-
 	myMAX.ClearDisplay();
 	// -Init Display Two
 	myMAX.SetCurrentDisplayNumber(2);
@@ -79,8 +80,14 @@ int main()
 	
 	// Write to Display one again
 	myMAX.SetCurrentDisplayNumber(1);
-	printf("Display 1 again\r\n");
+	printf("Display 1 again, 111\r\n");
 	myMAX.DisplayIntNum(111, myMAX.AlignRight);
+	busy_wait_ms(5000);
+
+	// Write to Display two again
+	myMAX.SetCurrentDisplayNumber(2);
+	printf("Display 2 again, 222\r\n");
+	myMAX.DisplayIntNum(222, myMAX.AlignRight);
 	busy_wait_ms(5000);
 	
 	// Clear the displays 
@@ -88,9 +95,11 @@ int main()
 	// -Clear Display one 
 	myMAX.SetCurrentDisplayNumber(1);
 	myMAX.ClearDisplay();
+	busy_wait_ms(2500);
 	// -Clear DisplayTwo 
 	myMAX.SetCurrentDisplayNumber(2);
 	myMAX.ClearDisplay();
+	busy_wait_ms(500);
 	
 	// End operations
 	myMAX.DisplayEndOperations();

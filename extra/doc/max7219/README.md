@@ -8,7 +8,7 @@
   * [Software](#software)
   * [Hardware](#hardware)
   * [Notes and Issues](#notes-and-issues)
-	* [Cascaded Displays](#cascaded-displays)
+	  * [Cascaded Displays](#cascaded-displays)
 
 
 ## Overview
@@ -71,5 +71,7 @@ From PICO to MAX. User can adjust brightness from 0x00 to 0x0F by default it is 
 
 ### Cascaded Displays
 
-Support for Cascaded Displays added is untested as only one display available.
-Cascaded Displays are displays connected together. Din-> Dout and CS lines tied together.
+Support for Cascaded Displays is shown in one of examples files. Multiple displays can be connected together. Cascaded Displays are displays connected together.  CS and CLK lines are tied together.
+The DIN line is connected to the first display only. The DOUT line of the first display is then connected to the DIN line of the next display and so on. Diagram below shows how to connect two displays together. Specify number of displays in constructor parameter.
+
+![img Cascade](https://github.com/gavinlyonsrepo/displaylib_LED_PICO/blob/main/extra/image/max7219cascade.png)

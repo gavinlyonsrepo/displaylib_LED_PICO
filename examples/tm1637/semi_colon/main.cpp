@@ -1,7 +1,7 @@
 /*!
 	@file main.cpp
 	@author Gavin Lyons
-	@brief A demo file library for TM1637 module Works on Model 4
+	@brief A demo file library for TM1637 module Works on Model 4 (tm1637 Model 4 semi-colon)
 			Carries out series of tests demonstrating arduino library TM1637_PICO.
 	@details
 			setSegments function those not touch the ASCII font table and takes raw data
@@ -44,7 +44,7 @@ const uint StatusLEDPin = 25; // PICO on_board Status LED
 #define  SEMI_COLON_ON (0x40)
 
 // Constructor object 
-TM1637plus_model4 myTM(CLOCK_TM, DIO_TM, COMM_DELAY_US, NUM_OF_DIGITS);
+TM1637plus_modelX myTM(CLOCK_TM, DIO_TM, COMM_DELAY_US, NUM_OF_DIGITS);
 
 // === Function Prototypes ===
 void Setup(void);

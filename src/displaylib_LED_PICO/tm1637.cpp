@@ -14,7 +14,7 @@
 			bus connected to the display
 	@param displaySize number of digits in display.
 */
-TM1637plus_model4::TM1637plus_model4(uint8_t clock, uint8_t data, int delay, int displaySize)
+TM1637plus_modelX::TM1637plus_modelX(uint8_t clock, uint8_t data, int delay, int displaySize)
 {
 	_DATA_IO = data;
 	_CLOCK_IO = clock;
@@ -25,7 +25,7 @@ TM1637plus_model4::TM1637plus_model4(uint8_t clock, uint8_t data, int delay, int
 /*! 
 	@brief Clears the display
 */
-void  TM1637plus_model4::displayClear()
+void  TM1637plus_modelX::displayClear()
 {
 	uint8_t data[_DisplaySize] = {0};
 	setSegments(data, _DisplaySize, 0);
@@ -34,7 +34,7 @@ void  TM1637plus_model4::displayClear()
 	@brief Begin method , set and claims GPIO
 	@note Call in Setup
 */
-void TM1637plus_model4::displayBegin(void)
+void TM1637plus_modelX::displayBegin(void)
 {
 	gpio_init(_DATA_IO);
 	gpio_init(_CLOCK_IO);
@@ -49,7 +49,7 @@ void TM1637plus_model4::displayBegin(void)
 	@note The setting takes effect when a command is given to change the data being
 	displayed.
 */
-void TM1637plus_model4::setBrightness(uint8_t brightness, bool on)
+void TM1637plus_modelX::setBrightness(uint8_t brightness, bool on)
 {
 	_brightness = (brightness & 0x7) | (on? 0x08 : 0x00);
 }
@@ -62,11 +62,11 @@ void TM1637plus_model4::setBrightness(uint8_t brightness, bool on)
 	The function may either set the entire display or any desirable part on its own. The first
 	digit is given by the reference position argument with 0 being the leftmost digit. The reference length
 	argument is the number of digits to be set. Other digits are not affected.
-	@param segments An array of size length containing the raw segment values
+	@param segments An array of size length containing the raw segment values, check font in seven_segment_font_data.hpp
 	@param length The number of digits to be modified
 	@param position The position from which to start the modification (0 - leftmost, 3 - rightmost)
 */
-void TM1637plus_model4::setSegments(const uint8_t segments[], uint8_t length, uint8_t position)
+void TM1637plus_modelX::setSegments(const uint8_t segments[], uint8_t length, uint8_t position)
 {
 	// Write Command 1
 	CommStart();
@@ -98,7 +98,7 @@ void TM1637plus_model4::setSegments(const uint8_t segments[], uint8_t length, ui
 			the number must be between 0 to 99)
 	@param position The position most significant digit (0 - leftmost, 3 - rightmost)
 */
-void TM1637plus_model4::DisplayDecimal(int number,  bool leading_zero ,uint8_t length, uint8_t position)
+void TM1637plus_modelX::DisplayDecimal(int number,  bool leading_zero ,uint8_t length, uint8_t position)
 {
 	DisplayDecimalwDot(number, 0, leading_zero, length, position);
 }
@@ -113,6 +113,7 @@ void TM1637plus_model4::DisplayDecimal(int number,  bool leading_zero ,uint8_t l
 		  leftmost dot of the digit being update. For example, if pos is 1, the MSB of dots
 		  will correspond the dot near digit no. 2 from the left. Dots are updated only on
 		  those digits actually being update (that is, no more than len digits)
+		  For model 4 semi-colon display set to 0x40 to turn on the colon.
 	@param leading_zero When true, leading zeros are displayed. Otherwise unnecessary digits are
 		  blank
 	@param length The number of digits to set. The user must ensure that the number to be shown
@@ -120,7 +121,7 @@ void TM1637plus_model4::DisplayDecimal(int number,  bool leading_zero ,uint8_t l
 		  the number must be between 0 to 99)
 	@param position The position least significant digit (0 - leftmost, 3 - rightmost)
 */
-void TM1637plus_model4::DisplayDecimalwDot(int number, uint8_t dots,  bool leading_zero ,uint8_t length, uint8_t position)
+void TM1637plus_modelX::DisplayDecimalwDot(int number, uint8_t dots,  bool leading_zero ,uint8_t length, uint8_t position)
 {
 	// Array to store the encoded digits for the display
 	uint8_t digits[_DisplaySize];
@@ -167,12 +168,13 @@ void TM1637plus_model4::DisplayDecimalwDot(int number, uint8_t dots,  bool leadi
 		  leftmost dot of the digit being update. For example, if pos is 1, the MSB of dots
 		  will correspond the dot near digit no. 2 from the left. Dots are updated only on
 		  those digits actually being update (that is, no more than len digits)
+		  For model 4 semi-colon display set to 0x40 to turn on the colon.
 	@param length The number of digits to set. The user must ensure that the number to be shown
 		  fits to the number of digits requested
 	@param position The position most significant digit (0 - leftmost, 3 - rightmost)
 	@return Zero for success , -2 for nullptr, -3 input string size not equal to specified length.
 */
-int TM1637plus_model4::DisplayString(const char* numStr, uint8_t dots, uint8_t length, uint8_t position)
+int TM1637plus_modelX::DisplayString(const char* numStr, uint8_t dots, uint8_t length, uint8_t position)
 {
 	if (numStr == nullptr) 
 	{
@@ -212,7 +214,7 @@ int TM1637plus_model4::DisplayString(const char* numStr, uint8_t dots, uint8_t l
 			bit 6 - segment G; bit 7 - always zero) from the font.
 			Will return zero(0x3F) if ASCII digit not in font.
 */
-unsigned char TM1637plus_model4::encodeCharacter(unsigned char digit)
+unsigned char TM1637plus_modelX::encodeCharacter(unsigned char digit)
 {
 	if (digit < _ASCII_FONT_OFFSET || digit >= _ASCII_FONT_END )
 	{
@@ -228,7 +230,7 @@ unsigned char TM1637plus_model4::encodeCharacter(unsigned char digit)
 	@brief Close method , frees GPIO and deactivate display.
 	@note call at end of program
 */
-void TM1637plus_model4::displayClose(void)
+void TM1637plus_modelX::displayClose(void)
 {
 	gpio_set_dir(_CLOCK_IO, GPIO_IN);
 	gpio_set_dir(_DATA_IO, GPIO_IN);
@@ -241,7 +243,7 @@ void TM1637plus_model4::displayClose(void)
 	@brief Sets the delay, in microseconds, between bit transition on the serial
 		bus connected to the display
 */
-void TM1637plus_model4::CommBitDelay(void)
+void TM1637plus_modelX::CommBitDelay(void)
 {
 	busy_wait_us(_BitDelayUS);
 }
@@ -249,7 +251,7 @@ void TM1637plus_model4::CommBitDelay(void)
 /*! 
 	@brief Starts the communication sequence 
 */
-void TM1637plus_model4::CommStart(void)
+void TM1637plus_modelX::CommStart(void)
 {
 	gpio_set_dir(_DATA_IO, GPIO_OUT);
 	CommBitDelay();
@@ -258,7 +260,7 @@ void TM1637plus_model4::CommStart(void)
 /*! 
 	@brief Stops the communication sequence
 */
-void TM1637plus_model4::CommStop(void)
+void TM1637plus_modelX::CommStop(void)
 {
 	
 	gpio_set_dir(_DATA_IO, GPIO_OUT);
@@ -276,7 +278,7 @@ void TM1637plus_model4::CommStop(void)
 	@param byte the Byte to write
 	@return status of acknowledge bit
 */
-bool TM1637plus_model4::writeByte(uint8_t byte)
+bool TM1637plus_modelX::writeByte(uint8_t byte)
 {
 	uint8_t data = byte;
 
