@@ -35,7 +35,7 @@ Model 4:
 
 Model 6:
 
-[![ model6 ](https://github.com/gavinlyonsrepo/pic_16F1619_projects/blob/master/images/tm1637a.jpg)](https://github.com/gavinlyonsrepo/pic_16F1619_projects/blob/master/images/tm1637a.jpg)
+[![ model6 ](https://github.com/gavinlyonsrepo/pic_16F1619_projects/blob/master/images/tm1637a.png)](https://github.com/gavinlyonsrepo/pic_16F1619_projects/blob/master/images/tm1637a.png)
 
 ## Software
 
