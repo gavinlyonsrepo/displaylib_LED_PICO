@@ -2,7 +2,7 @@
 	@file main.cpp
 	@author Gavin Lyons
 	@brief A demo file library for TM1637 module Works on Model 6(tm1637 Model 6 decimal point)
-			Carries out series of tests demonstrating arduino library TM1637_PICO.
+			Carries out series of tests demonstrating library.
 	@details
 			setSegments function those not touch the ASCII font table and takes raw data
 			Segment data used by other functions is is from the ASCII table in font file 
@@ -37,7 +37,7 @@
 // Misc
 const uint StatusLEDPin = 25; // PICO on_board Status LED
 
-// tm1638
+// tm1637 setup
 #define  CLOCK_TM       3  // clock = GPIO connected to clock line of module
 #define  DIO_TM         4  // data = GPIO connected to data line of module
 #define  COMM_DELAY_US  75 // Internal Serial Communications delay in uS
@@ -69,34 +69,28 @@ int main()
 	EndTests();
 	return 0;
 }
-
 // === End  of main ===
 
 
 // === Function Space ===
 
-// Function to setup Radio
+// Function to setup tm1637
 void Setup(void)
 {
 	busy_wait_ms(100);
-
 	// Initialize Status LED pin
 	gpio_init(StatusLEDPin);
 	gpio_set_dir(StatusLEDPin, GPIO_OUT);
 	gpio_put(StatusLEDPin, true);
-
 	// Init USB output 38400 baud (optional)
 	stdio_init_all();
-
-	//init tm1638
+	//init tm1637
 	myTM.displayBegin();
 	myTM.setBrightness(0x07, true);
 	busy_wait_ms(myTestDelay1);
 	printf("Test Begin :: TM1637\r\n");
 	gpio_put(StatusLEDPin, false);
 }
-
-// ************** Function Space ***********
 
 void EndTests(void)
 {
